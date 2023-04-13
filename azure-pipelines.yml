@@ -15,14 +15,93 @@ stages:
         pool:
           vmImage: ubuntu-latest
 
+        variables:  
+        # ----------------------------------------------------
+        # Azure DevOps Pipelines devices
+        # enable this to print debug info to the Azure DevOps Pipelines console
+        # system.debug: true   
+        # ----------------------------------------------------
+        buildConfiguration: 'Release'
+        # ----------------------------------------------------
+  
         steps:
-        - script: echo Hello, world!
-          displayName: 'Run a one-line script'
+        
+        - task: Bash@3
+          displayName: Print Relevant Variables Values
+          inputs:
+             targetType: 'inline'
+             script: |
+               echo "System.Debug=$(System.Debug)"
+               echo "Build.Repository.LocalPath=$(Build.Repository.LocalPath)"
+          #displayName: Print Variables of imported Variable Groups
+          #name: PrintVariableGroupsVariables
+          #inputs:
+          #    targetType: 'inline'
+          #    script: |
+          #      echo "System.Debug=$(System.Debug)"
+          #      echo "KeyStoreAlias=$(KeyStoreAlias)"
+          #      echo "SonarCloudOrganization=$(SonarCloudOrganization)"
+          #      echo "SonarCloudProjectKey=$(SonarCloudProjectKey)"
+          #      echo "SonarCloudProjectName=$(SonarCloudProjectName)"
 
-        - script: |
-            echo Add other tasks to build, test, and deploy your project.
-            echo See https://aka.ms/yaml
-          displayName: 'Run a multi-line script'
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/use-dotnet-v2?view=azure-pipelines
+        # We want to build WebApp1 from source code on this ubuntu-latest agent but it does not come with a .Net SDK
+        # by default thus we use this task to install the required SDK on the agent
+        # However, it may be that on ubuntu-latest agent the 
+        #- task: UseDotNet@2 .Net SDK 6.x is already installed these days!
+        #  displayName: Install .Net Core 6 SDK  
+        #  inputs:
+        #    packageType: 'sdk'
+        #    version: '6.x'
+
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/dotnet-core-cli-v2?view=azure-pipelines
+        - task: DotNetCoreCLI@2
+          displayName: Build WebApp1 with the .Net Core SDK   
+          inputs:
+            command: 'custom'
+            custom: 'build'
+            arguments: '--configuration $(buildConfiguration)'
+            projects: '**/WebApp1/*.csproj'
+
+        - task: DotNetCoreCLI@2
+          displayName: Publish WebApp1 with the .Net Core SDK   
+          inputs:            
+            command: 'publish'
+            arguments: '--configuration $(buildConfiguration) --no-build --output $(Build.ArtifactStagingDirectory)'
+            projects: '**/WebApp1/*.csproj'
+            # in this case we want to publish a specific web project in the WebApp1 subfolder
+            publishWebProjects: false 
+            # in this case we want the publish to leave the folder with the published content unzipped
+            zipAfterPublish: true            
+
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
+        #- task: Docker@2
+        #  displayName: Login to ACR
+        #  inputs:
+        #    command: login
+        #    containerRegistry: dockerRegistryServiceConnection1
+        #- task: Docker@2
+        #  displayName: Login to Docker Hub
+        #  inputs:
+        #    command: login
+        #    containerRegistry: dockerRegistryServiceConnection2
+        #- task: Docker@2
+        #  displayName: Build and Push
+        #  inputs:
+        #    command: buildAndPush
+        #    repository: contosoRepository # username/contosoRepository for DockerHub
+        #    tags: |
+        #      tag1
+        #      tag2     
+        
+        #- script: echo Hello, world!
+        #  displayName: 'Run a one-line script'
+
+        #- script: |
+        #    echo Add other tasks to build, test, and deploy your project.
+        #    echo See https://aka.ms/yaml
+        #  displayName: 'Run a multi-line script'
+
   - stage: CD
     displayName: CD Stage
     jobs:
