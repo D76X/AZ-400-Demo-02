@@ -10,15 +10,30 @@ stages:
   - stage: CI
     displayName: CI Stage
     jobs:
-      - job: BuilApp        
+      - job: Build the imgages and push them to the ACR        
         pool:
           vmImage: ubuntu-latest
 
-    steps:
-    - script: echo Hello, world!
-      displayName: 'Run a one-line script'
+        steps:
+        - script: echo Hello, world!
+          displayName: 'Run a one-line script'
 
-    - script: |
-        echo Add other tasks to build, test, and deploy your project.
-        echo See https://aka.ms/yaml
-      displayName: 'Run a multi-line script'
+        - script: |
+            echo Add other tasks to build, test, and deploy your project.
+            echo See https://aka.ms/yaml
+          displayName: 'Run a multi-line script'
+  - stage: CD
+    displayName: CD Stage
+    jobs:
+      - job: Deply Containers from the ACR to the corresponding container services on Azure       
+        pool:
+          vmImage: ubuntu-latest
+
+        steps:
+        - script: echo Hello, world!
+          displayName: 'Run a one-line script'
+
+        - script: |
+            echo Add other tasks to build, test, and deploy your project.
+            echo See https://aka.ms/yaml
+          displayName: 'Run a multi-line script'
