@@ -21,7 +21,7 @@ stages:
         # enable this to print debug info to the Azure DevOps Pipelines console
         # system.debug: true   
         # ----------------------------------------------------
-        buildConfiguration: 'Release'
+          buildConfiguration: 'Release'
         # ----------------------------------------------------
   
         steps:
