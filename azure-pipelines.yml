@@ -84,7 +84,9 @@ stages:
             # in this case we want to publish a specific web project in the WebApp1 subfolder
             publishWebProjects: false 
             # in this case we want the publish to leave the folder with the published content unzipped
-            zipAfterPublish: true            
+            zipAfterPublish: false  
+            # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
+            modifyOutputPath: true 
 
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
         #- task: Docker@2
