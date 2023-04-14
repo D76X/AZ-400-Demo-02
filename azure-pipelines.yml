@@ -123,6 +123,7 @@ stages:
             containerRegistry: 'containerRegistryServiceConnection'
             repository: 'webapps'
             command: 'buildAndPush'
+            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
             Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
             #Dockerfile: '**/Dockerfile'      
 
