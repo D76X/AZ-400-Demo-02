@@ -104,18 +104,27 @@ stages:
         #    repository: contosoRepository # username/contosoRepository for DockerHub
         #    tags: |
         #      tag1
-        #      tag2     
+        #      tag2  
+        # ----------------------------------------------------------------------------        
+        #- task: Docker@2
+        #  displayName: Build and Push an image to Azure Container Registry
+        #  inputs:
+        #    command: buildAndPush
+        #    repository: $(imageRepository)
+        #    dockerFile: $(dockerfilePath)            
+        #    #containerRegistry: $(containerRegistry)
+        #    containerRegistry: $(containerRegistryServiceConnection)
+        #    tags: |
+        #      $(tag)
+        # ----------------------------------------------------------------------------
+        # Docker@2 task from the pipeline editor
         - task: Docker@2
-          displayName: Build and Push an image to Azure Container Registry
           inputs:
-            command: buildAndPush
-            repository: $(imageRepository)
-            dockerFile: $(dockerfilePath)            
-            #containerRegistry: $(containerRegistry)
-            containerRegistry: $(containerRegistryServiceConnection)
-            tags: |
-              $(tag)
-              
+            containerRegistry: 'containerRegistryServiceConnection'
+            repository: 'webapps'
+            command: 'buildAndPush'
+            Dockerfile: '$(Build.SourceDirectory)/WebApp1/Dockerfile'      
+            #Dockerfile: '**/Dockerfile'      
 
         #- script: echo Hello, world!
         #  displayName: 'Run a one-line script'
