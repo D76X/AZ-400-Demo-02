@@ -111,7 +111,8 @@ stages:
             command: buildAndPush
             repository: $(imageRepository)
             dockerFile: $(dockerfilePath)            
-            containerRegistry: $(containerRegistry)
+            #containerRegistry: $(containerRegistry)
+            containerRegistry: $(containerRegistryServiceConnection)
             tags: |
               $(tag)
               
