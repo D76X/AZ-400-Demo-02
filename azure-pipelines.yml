@@ -25,7 +25,7 @@ stages:
           # --------------------------------------------------
           # the following are for Docker          
           imageRepository: 'webapps'          
-          dockerfilePath: '$(Build.SourceDirectory)/WebApp1/Dockerfile'
+          dockerfilePath: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
           tag : '$(Build.BuildId)'
           #containerRegistry: 'acraz400demox.azurecr.io'
           containerRegistry: '$(containerRegistryServiceConnection)'          
@@ -123,7 +123,7 @@ stages:
             containerRegistry: 'containerRegistryServiceConnection'
             repository: 'webapps'
             command: 'buildAndPush'
-            Dockerfile: $(Build.SourceDirectory)/WebApp1/Dockerfile
+            Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
             #Dockerfile: '**/Dockerfile'      
 
         #- script: echo Hello, world!
