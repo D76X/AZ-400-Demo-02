@@ -94,9 +94,9 @@ stages:
             repository: 'webapps'
             command: 'buildAndPush'
             buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
-            Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
             #string. Required when command = build || command = buildAndPush. Default value: **/Dockerfile.
             Dockerfile: '**/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
             #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
             #Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
             containerRegistry: 'containerRegistryServiceConnection'
