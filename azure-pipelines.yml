@@ -88,6 +88,18 @@ stages:
             # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
             modifyOutputPath: true 
 
+        # Docker@2 task from the pipeline editor
+        - task: Docker@2
+          inputs:            
+            repository: 'webapps'
+            command: 'buildAndPush'
+            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
+            Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
+            containerRegistry: 'containerRegistryServiceConnection'
+            #Dockerfile: '**/Dockerfile'  
+            #sourceFolder: '$(Build.Repository.LocalPath)/ArmTemplates/bin/Release/'
+
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
         #- task: Docker@2
         #  displayName: Login to ACR
@@ -119,15 +131,7 @@ stages:
         #    tags: |
         #      $(tag)
         # ----------------------------------------------------------------------------
-        # Docker@2 task from the pipeline editor
-        - task: Docker@2
-          inputs:
-            containerRegistry: 'containerRegistryServiceConnection'
-            repository: 'webapps'
-            command: 'buildAndPush'
-            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
-            Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
-            #Dockerfile: '**/Dockerfile'      
+            
 
         #- script: echo Hello, world!
         #  displayName: 'Run a one-line script'
