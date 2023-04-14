@@ -22,6 +22,13 @@ stages:
         # system.debug: true   
         # ----------------------------------------------------
           buildConfiguration: 'Release'
+          # --------------------------------------------------
+          # the following are for Docker          
+          imageRepository: 'webapps'          
+          dockerfilePath: '$(Build.SourceDirectory)/WebApp1/Dockerfile'
+          tag : '$(Build.BuildId)'
+          #containerRegistry: 'acraz400demox.azurecr.io'
+          containerRegistry: '$(containerRegistryServiceConnection)'          
         # ----------------------------------------------------
   
         steps:
@@ -47,12 +54,17 @@ stages:
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/use-dotnet-v2?view=azure-pipelines
         # We want to build WebApp1 from source code on this ubuntu-latest agent but it does not come with a .Net SDK
         # by default thus we use this task to install the required SDK on the agent
-        # However, it may be that on ubuntu-latest agent the 
-        #- task: UseDotNet@2 .Net SDK 6.x is already installed these days!
+        # However, it may be that on ubuntu-latest agent the .Net SDK 6.x is already installed these days
+        # an therefore the following task may not be necessary. It is left as comment as a remeinder of the
+        # fact that on a Linux agent you must take care of verifying whether the build tools you need are
+        # present as a default or not and in the latter you must installed them in steps of the pipeline.
+        # --------------------------------------------------------------------------
+        #- task: UseDotNet@2 
         #  displayName: Install .Net Core 6 SDK  
         #  inputs:
         #    packageType: 'sdk'
         #    version: '6.x'
+        # --------------------------------------------------------------------------
 
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/dotnet-core-cli-v2?view=azure-pipelines
         - task: DotNetCoreCLI@2
@@ -93,7 +105,17 @@ stages:
         #    tags: |
         #      tag1
         #      tag2     
-        
+        - task: Docker@2
+          displayName: Build and Push an image to Azure Container Registry
+          inputs:
+            command: buildAndPush
+            repository: $(imageRepository)
+            dockerFile: $(dockerfilePath)
+            containerRegistry: '$(containerRegistry)'
+            tags: |
+              $(tag)
+              
+
         #- script: echo Hello, world!
         #  displayName: 'Run a one-line script'
 
