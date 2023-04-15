@@ -74,15 +74,7 @@ stages:
             custom: 'build'
             arguments: '--configuration $(buildConfiguration)'
             projects: '**/WebApp1/*.csproj'
-
-        # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
-        # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
-        - powershell: |
-           Write-Host "Content of $(Build.SourcesDirectory)"
-           Get-ChildItem -Path $(Build.SourcesDirectory)\*.* -Recurse -Force | Out-String -Width 160
-          errorActionPreference: continue
-          displayName: 'pwsh Get-ChildItem of $(Build.SourcesDirectory)'
-          continueOnError: true
+                 
           
         - task: DotNetCoreCLI@2
           displayName: Publish WebApp1 with the .Net Core SDK   
@@ -99,6 +91,16 @@ stages:
 
         # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
+        # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
+        # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
+        # $(Agent.BuildDirectory) = /home/vsts/work/1
+        - powershell: |
+           Write-Host "Content of $(Agent.BuildDirectory)"
+           Get-ChildItem -Path $(Agent.BuildDirectory)\*.* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of $(Agent.BuildDirectory)'
+          continueOnError: true
+
         - powershell: |
            Write-Host "Content of $(Build.SourcesDirectory)"
            Get-ChildItem -Path $(Build.SourcesDirectory)\*.* -Recurse -Force | Out-String -Width 160
