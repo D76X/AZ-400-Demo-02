@@ -97,6 +97,13 @@ stages:
         # $(Agent.BuildDirectory) = /home/vsts/work/1
         - powershell: |
            Write-Host "Content of Build.Repository.LocalPath = $(Build.Repository.LocalPath)"
+           Get-ChildItem -Path $(Build.Repository.LocalPath)\* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of Build.Repository.LocalPath = $(Build.Repository.LocalPath)'
+          continueOnError: true
+
+        - powershell: |
+           Write-Host "Content of Build.Repository.LocalPath = $(Build.Repository.LocalPath)"
            Get-ChildItem -Path $(Build.Repository.LocalPath)\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
           displayName: 'pwsh Get-ChildItem of Build.Repository.LocalPath = $(Build.Repository.LocalPath)'
