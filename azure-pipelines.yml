@@ -96,9 +96,9 @@ stages:
         # $(Agent.BuildDirectory) = /home/vsts/work/1
         - powershell: |
            Write-Host "Content of Agent.BuildDirectory/WebApp1 = $(Agent.BuildDirectory)/WebApp1"
-           Get-ChildItem -Path $(Agent.BuildDirectory)\WebApp1\*.* -Recurse -Force | Out-String -Width 160
+           Get-ChildItem -Path $(Agent.BuildDirectory)/WebApp1/*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
-          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory\WebApp1 = $(Agent.BuildDirectory)\WebApp1'
+          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory/WebApp1 = $(Agent.BuildDirectory)/WebApp1'
           continueOnError: true
 
         - powershell: |
