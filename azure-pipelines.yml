@@ -128,7 +128,7 @@ stages:
         - task: Docker@2
           inputs:            
             command: 'buildAndPush'
-            containerRegistry: '$(acrServiceConnection)'
+            containerRegistry: 'containerRegistryServiceConnection'
             repository: '$(imageRepository)'
             buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' 
             Dockerfile: 'DockerfileAzDevOps'
