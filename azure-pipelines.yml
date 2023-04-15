@@ -94,13 +94,13 @@ stages:
           displayName: show folder structure on agent
           inputs:
             script: echo "Structure of work folder of this pipeline:"
-            tree $(Agent.WorkFolder)\1 /f
-            echo "Build.ArtifactStagingDirectory:" 
-            echo "$(Build.ArtifactStagingDirectory)"
-            echo "Build.BinariesDirectory:" 
-            echo "$(Build.BinariesDirectory)"
-            echo "Build.SourcesDirectory:"
-            echo "$(Build.SourcesDirectory)"
+              tree $(Agent.WorkFolder)\1 /f
+              echo "Build.ArtifactStagingDirectory:" 
+              echo "$(Build.ArtifactStagingDirectory)"
+              echo "Build.BinariesDirectory:" 
+              echo "$(Build.BinariesDirectory)"
+              echo "Build.SourcesDirectory:"
+              echo "$(Build.SourcesDirectory)"
 
         # Docker@2 task from the pipeline editor
         #- task: Docker@2
