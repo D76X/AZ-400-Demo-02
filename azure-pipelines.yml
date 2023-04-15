@@ -88,20 +88,34 @@ stages:
             # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
             modifyOutputPath: true 
 
+        # https://stackoverflow.com/questions/63117797/azure-pipelines-is-there-a-way-to-view-the-folder-structure
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/cmd-line-v2?view=azure-pipelines&tabs=yaml&viewFallbackFrom=azure-devops  
+        - task: CmdLine@2
+          displayName: show folder structure on agent
+          inputs:
+            script: echo "Structure of work folder of this pipeline:"
+            tree $(Agent.WorkFolder)\1 /f
+            echo "Build.ArtifactStagingDirectory:" 
+            echo "$(Build.ArtifactStagingDirectory)"
+            echo "Build.BinariesDirectory:" 
+            echo "$(Build.BinariesDirectory)"
+            echo "Build.SourcesDirectory:"
+            echo "$(Build.SourcesDirectory)"
+
         # Docker@2 task from the pipeline editor
-        - task: Docker@2
-          inputs:            
-            repository: 'webapps'
-            command: 'buildAndPush'
-            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
+        #- task: Docker@2
+        #  inputs:            
+        #    repository: 'webapps'
+            #command: 'buildAndPush'
+            #buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
             #string. Required when command = build || command = buildAndPush. Default value: **/Dockerfile.
             #Dockerfile: 'WebApp1/Dockerfile'
             #Dockerfile: '**/WebApp1/Dockerfile'
             #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
             #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
-            Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
             #Dockerfile: '$(Build.ArtifactStagingDirectory)/WebApp1/Dockerfile'
-            containerRegistry: 'containerRegistryServiceConnection'
+            #containerRegistry: 'containerRegistryServiceConnection'
             #Dockerfile: '**/Dockerfile'  
             #sourceFolder: '$(Build.Repository.LocalPath)/ArmTemplates/bin/Release/'
 
