@@ -96,6 +96,15 @@ stages:
           displayName: 'PowerShell Script List folder structure $(Build.ArtifactStagingDirectory)'
           continueOnError: true
 
+        # https://praveenkumarsreeram.com/2022/10/24/azure-devops-tips-and-tricks-15-working-with-the-magic-folders-a-b-and-s-in-the-azure-devops-agents/ 
+        - task: PowerShell@2
+          displayName: List all Folders in $(System.DefaultWorkingDirectory)
+          inputs:
+            targetType: 'inline'
+            pwsh: true
+            script: |
+              Get-ChildItem -path $(System.DefaultWorkingDirectory) -recurse
+
         # https://techcommunity.microsoft.com/t5/azure-devops/azure-devops-how-to-monitor-the-files-amp-folders-placed-into/m-p/2481508
         - powershell: |
            Write-Host "Show all folder content"
