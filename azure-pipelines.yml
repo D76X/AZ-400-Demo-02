@@ -88,6 +88,15 @@ stages:
             # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
             modifyOutputPath: true 
 
+        # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
+        # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
+        - powershell: |
+           Write-Host "Show all folder content ArtifactStagingDirectory"
+           Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'PowerShell Script List folder structure $(Build.ArtifactStagingDirectory)'
+          continueOnError: true
+
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         - powershell: |
            Write-Host "Show all folder content ArtifactStagingDirectory"
