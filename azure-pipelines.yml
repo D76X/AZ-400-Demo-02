@@ -96,6 +96,11 @@ stages:
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         # $(Agent.BuildDirectory) = /home/vsts/work/1
         
+        # -------------------------------------------------------
+        # VERY USEFUL
+        # notice that \*.* is replaced by \* because the Dockerfile does not have 
+        # extension and does not show up with the former wildcard
+
         # /home/vsts/work/1/s
         - powershell: |
            Write-Host "Content of Build.Repository.LocalPath = $(Build.Repository.LocalPath)"
@@ -117,6 +122,9 @@ stages:
           errorActionPreference: continue
           displayName: 'pwsh Get-ChildItem of Build.ArtifactStagingDirectory = $(Build.ArtifactStagingDirectory)'
           continueOnError: true
+
+        # -------------------------------------------------------
+        # USEFUL
 
         #- powershell: |
         #   Write-Host "Content of Build.Repository.LocalPath = $(Build.Repository.LocalPath)"
