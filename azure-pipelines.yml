@@ -88,12 +88,19 @@ stages:
             # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
             modifyOutputPath: true 
 
+        - powershell: |
+           Write-Host "Show all folder content ArtifactStagingDirectory"
+           Get-ChildItem -Path $(Agent.ArtifactStagingDirectory)\*.* -Recurse -Force
+          errorActionPreference: continue
+          displayName: 'PowerShell Script List folder structure $(Agent.ArtifactStagingDirectory)'
+          continueOnError: true
+
         # https://techcommunity.microsoft.com/t5/azure-devops/azure-devops-how-to-monitor-the-files-amp-folders-placed-into/m-p/2481508
         - powershell: |
            Write-Host "Show all folder content"
            Get-ChildItem -Path $(Agent.WorkFolder)\*.* -Recurse -Force
           errorActionPreference: continue
-          displayName: 'PowerShell Script List folder structure'
+          displayName: 'PowerShell Script List folder structure $(Agent.WorkFolder)'
           continueOnError: true
 
         # https://stackoverflow.com/questions/63117797/azure-pipelines-is-there-a-way-to-view-the-folder-structure
