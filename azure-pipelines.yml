@@ -126,7 +126,7 @@ stages:
         # -------------------------------------------------------
         
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
-         Docker@2 task from the pipeline editor
+        # Docker@2 task from the pipeline editor
         - task: Docker@2
           inputs:            
             repository: 'webapps'
