@@ -89,16 +89,17 @@ stages:
             # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
             modifyOutputPath: true 
 
+        # -------------------------------------------------------
         # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         # $(Agent.BuildDirectory) = /home/vsts/work/1
         - powershell: |
-           Write-Host "Content of Agent.BuildDirectory/WebApp1 = $(Agent.BuildDirectory)/WebApp1"
-           Get-ChildItem -Path $(Agent.BuildDirectory)/WebApp1\*.* -Recurse -Force | Out-String -Width 160
+           Write-Host "Content of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1"
+           Get-ChildItem -Path $(Agent.BuildDirectory)/s/WebApp1\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
-          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory/WebApp1 = $(Agent.BuildDirectory)/WebApp1'
+          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1'
           continueOnError: true
 
         - powershell: |
@@ -122,6 +123,7 @@ stages:
           displayName: 'pwsh Get-ChildItem of Build.SourcesDirectory = $(Build.ArtifactStagingDirectory)'
           continueOnError: true
 
+        # ------------------------------------------------------- 
         ## https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         #- powershell: |
         #   Write-Host "Show all folder content ArtifactStagingDirectory"
