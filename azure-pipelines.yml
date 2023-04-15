@@ -124,6 +124,30 @@ stages:
           continueOnError: true
 
         # -------------------------------------------------------
+        
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
+         Docker@2 task from the pipeline editor
+        - task: Docker@2
+          inputs:            
+            repository: 'webapps'
+            command: 'buildAndPush'
+            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
+            #string. Required when command = build || command = buildAndPush. Default value: **/Dockerfile.
+            Dockerfile: 'WebApp1/DockerfileAzDevOps'
+            #Dockerfile: 'WebApp1/Dockerfile'
+            #Dockerfile: '**/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
+            #Dockerfile: '$(Build.ArtifactStagingDirectory)/WebApp1/Dockerfile'
+            containerRegistry: 'containerRegistryServiceConnection'
+            #Dockerfile: '**/Dockerfile'  
+            #sourceFolder: '$(Build.Repository.LocalPath)/ArmTemplates/bin/Release/'
+        
+        
+        
+        
+        # -------------------------------------------------------
         # USEFUL
 
         #- powershell: |
