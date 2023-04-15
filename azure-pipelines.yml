@@ -25,8 +25,7 @@ stages:
           # --------------------------------------------------
           # the following are for Docker          
           imageRepository: 'webapps'          
-          buildTag : '$(Build.BuildId)'          
-          acrServiceConnection: '$(containerRegistryServiceConnection)'          
+          buildTag : '$(Build.BuildId)'                    
         # ----------------------------------------------------
   
         steps:
@@ -128,10 +127,14 @@ stages:
         - task: Docker@2
           inputs:            
             command: 'buildAndPush'
+            # containerRegistry must be set to the name of the Service Connection to the Docker 
+            # available to this pipeline
             containerRegistry: 'containerRegistryServiceConnection'
             repository: '$(imageRepository)'
             buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' 
-            Dockerfile: 'DockerfileAzDevOps'
+            # notice here that although the bildContext is set to WebApp1 you still need
+            # to prepend the name of the Dockerfile to be used with the folder name WebApp1
+            Dockerfile: 'WebApp1/DockerfileAzDevOps'
             tags: |
               'webapp1-$(buildTag)'          
         
