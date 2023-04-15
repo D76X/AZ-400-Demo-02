@@ -96,6 +96,20 @@ stages:
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         # $(Agent.BuildDirectory) = /home/vsts/work/1
         - powershell: |
+           Write-Host "Content of Agent.WorkFolder = $(Agent.WorkFolder)"
+           Get-ChildItem -Path $(Agent.WorkFolder)\*.* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of Agent.WorkFolder = $(Agent.WorkFolder)'
+          continueOnError: true
+
+        - powershell: |
+           Write-Host "Content of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1"
+           Get-ChildItem -Path $(Agent.BuildDirectory)/s/WebApp1\*.* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1'
+          continueOnError: true
+
+        - powershell: |
            Write-Host "Content of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1"
            Get-ChildItem -Path $(Agent.BuildDirectory)/s/WebApp1\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
