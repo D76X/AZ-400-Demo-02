@@ -95,24 +95,31 @@ stages:
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         # $(Agent.BuildDirectory) = /home/vsts/work/1
         - powershell: |
-           Write-Host "Content of $(Agent.BuildDirectory)"
+           Write-Host "Content of Agent.BuildDirectory/WebApp1 = $(Agent.BuildDirectory)/WebApp1"
+           Get-ChildItem -Path $(Agent.BuildDirectory)\WebApp1\*.* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory\WebApp1 = $(Agent.BuildDirectory)\WebApp1'
+          continueOnError: true
+
+        - powershell: |
+           Write-Host "Content of Agent.BuildDirectory = $(Agent.BuildDirectory)"
            Get-ChildItem -Path $(Agent.BuildDirectory)\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
-          displayName: 'pwsh Get-ChildItem of $(Agent.BuildDirectory)'
+          displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory = $(Agent.BuildDirectory)'
           continueOnError: true
 
         - powershell: |
-           Write-Host "Content of $(Build.SourcesDirectory)"
+           Write-Host "Content of Build.SourcesDirectory = $(Build.SourcesDirectory)"
            Get-ChildItem -Path $(Build.SourcesDirectory)\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
-          displayName: 'pwsh Get-ChildItem of $(Build.SourcesDirectory)'
+          displayName: 'pwsh Get-ChildItem of Build.SourcesDirectory = $(Build.SourcesDirectory)'
           continueOnError: true
 
         - powershell: |
-           Write-Host "Content of $(Build.ArtifactStagingDirectory)"
+           Write-Host "Content of Build.SourcesDirectory = $(Build.ArtifactStagingDirectory)"
            Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
-          displayName: 'pwsh Get-ChildItem of $(Build.ArtifactStagingDirectory)'
+          displayName: 'pwsh Get-ChildItem of Build.SourcesDirectory = $(Build.ArtifactStagingDirectory)'
           continueOnError: true
 
         ## https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
