@@ -137,7 +137,7 @@ stages:
             Dockerfile: 'WebApp1/DockerfileAzDevOps'
             # for image tags the _ is the only separator allowed
             tags: |
-              'webapp1$(buildTag)'          
+              '$(buildTag)'          
         
         # -------------------------------------------------------
         # USEFUL
