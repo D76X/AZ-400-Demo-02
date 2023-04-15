@@ -91,50 +91,57 @@ stages:
         # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
         # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
         - powershell: |
-           Write-Host "Show all folder content ArtifactStagingDirectory"
+           Write-Host "Content of $(Build.SourcesDirectory)"
+           Get-ChildItem -Path $(Build.SourcesDirectory)\*.* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of $(Build.SourcesDirectory)'
+          continueOnError: true
+
+        - powershell: |
+           Write-Host "Content of $(Build.ArtifactStagingDirectory)"
            Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
-          displayName: 'PowerShell Script List folder structure $(Build.ArtifactStagingDirectory)'
+          displayName: 'pwsh Get-ChildItem of $(Build.ArtifactStagingDirectory)'
           continueOnError: true
 
-        # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
-        - powershell: |
-           Write-Host "Show all folder content ArtifactStagingDirectory"
-           Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force
-          errorActionPreference: continue
-          displayName: 'PowerShell Script List folder structure $(Build.ArtifactStagingDirectory)'
-          continueOnError: true
+        ## https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
+        #- powershell: |
+        #   Write-Host "Show all folder content ArtifactStagingDirectory"
+        #   Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force
+        #  errorActionPreference: continue
+        #  displayName: 'PowerShell Script List folder structure $(Build.ArtifactStagingDirectory)'
+        #  continueOnError: true
 
-        # https://praveenkumarsreeram.com/2022/10/24/azure-devops-tips-and-tricks-15-working-with-the-magic-folders-a-b-and-s-in-the-azure-devops-agents/ 
-        - task: PowerShell@2
-          displayName: List all Folders in $(System.DefaultWorkingDirectory)
-          inputs:
-            targetType: 'inline'
-            pwsh: true
-            script: |
-              Get-ChildItem -path $(System.DefaultWorkingDirectory) -recurse
+        ## https://praveenkumarsreeram.com/2022/10/24/azure-devops-tips-and-tricks-15-working-with-the-magic-folders-a-b-and-s-in-the-azure-devops-agents/ 
+        #- task: PowerShell@2
+        #  displayName: List all Folders in $(System.DefaultWorkingDirectory)
+        #  inputs:
+        #    targetType: 'inline'
+        #    pwsh: true
+        #    script: |
+        #      Get-ChildItem -path $(System.DefaultWorkingDirectory) -recurse
 
-        # https://techcommunity.microsoft.com/t5/azure-devops/azure-devops-how-to-monitor-the-files-amp-folders-placed-into/m-p/2481508
-        - powershell: |
-           Write-Host "Show all folder content"
-           Get-ChildItem -Path $(Agent.WorkFolder)\*.* -Recurse -Force
-          errorActionPreference: continue
-          displayName: 'PowerShell Script List folder structure $(Agent.WorkFolder)'
-          continueOnError: true
+        ## https://techcommunity.microsoft.com/t5/azure-devops/azure-devops-how-to-monitor-the-files-amp-folders-placed-into/m-p/2481508
+        #- powershell: |
+        #   Write-Host "Show all folder content"
+        #   Get-ChildItem -Path $(Agent.WorkFolder)\*.* -Recurse -Force
+        #  errorActionPreference: continue
+        #  displayName: 'PowerShell Script List folder structure $(Agent.WorkFolder)'
+        #  continueOnError: true
 
-        # https://stackoverflow.com/questions/63117797/azure-pipelines-is-there-a-way-to-view-the-folder-structure
-        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/cmd-line-v2?view=azure-pipelines&tabs=yaml&viewFallbackFrom=azure-devops  
-        - task: CmdLine@2
-          displayName: show folder structure on agent
-          inputs:
-            script: echo "Structure of work folder of this pipeline:"
-              tree $(Agent.WorkFolder)\1 /f
-              echo "Build.ArtifactStagingDirectory:" 
-              echo "$(Build.ArtifactStagingDirectory)"
-              echo "Build.BinariesDirectory:" 
-              echo "$(Build.BinariesDirectory)"
-              echo "Build.SourcesDirectory:"
-              echo "$(Build.SourcesDirectory)"
+        ## https://stackoverflow.com/questions/63117797/azure-pipelines-is-there-a-way-to-view-the-folder-structure
+        ## https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/cmd-line-v2?view=azure-pipelines&tabs=yaml&viewFallbackFrom=azure-devops  
+        #- task: CmdLine@2
+        #  displayName: show folder structure on agent
+        #  inputs:
+        #    script: echo "Structure of work folder of this pipeline:"
+        #      tree $(Agent.WorkFolder)\1 /f
+        #      echo "Build.ArtifactStagingDirectory:" 
+        #      echo "$(Build.ArtifactStagingDirectory)"
+        #      echo "Build.BinariesDirectory:" 
+        #      echo "$(Build.BinariesDirectory)"
+        #      echo "Build.SourcesDirectory:"
+        #      echo "$(Build.SourcesDirectory)"
 
         # Docker@2 task from the pipeline editor
         #- task: Docker@2
