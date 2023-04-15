@@ -136,8 +136,7 @@ stages:
             # to prepend the name of the Dockerfile to be used with the folder name WebApp1
             Dockerfile: 'WebApp1/DockerfileAzDevOps'
             # for image tags the _ is the only separator allowed
-            tags: |
-              webapp1  
+            tags: |                
               $(builTag)          
         
         # -------------------------------------------------------
