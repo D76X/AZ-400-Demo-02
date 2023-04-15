@@ -25,10 +25,8 @@ stages:
           # --------------------------------------------------
           # the following are for Docker          
           imageRepository: 'webapps'          
-          dockerfilePath: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
-          tag : '$(Build.BuildId)'
-          #containerRegistry: 'acraz400demox.azurecr.io'
-          containerRegistry: '$(containerRegistryServiceConnection)'          
+          buildTag : '$(Build.BuildId)'          
+          acrServiceConnection: '$(containerRegistryServiceConnection)'          
         # ----------------------------------------------------
   
         steps:
@@ -129,23 +127,13 @@ stages:
         # Docker@2 task from the pipeline editor
         - task: Docker@2
           inputs:            
-            repository: 'webapps'
             command: 'buildAndPush'
-            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
-            #string. Required when command = build || command = buildAndPush. Default value: **/Dockerfile.
-            Dockerfile: 'WebApp1/DockerfileAzDevOps'
-            #Dockerfile: 'WebApp1/Dockerfile'
-            #Dockerfile: '**/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.ArtifactStagingDirectory)/WebApp1/Dockerfile'
-            containerRegistry: 'containerRegistryServiceConnection'
-            #Dockerfile: '**/Dockerfile'  
-            #sourceFolder: '$(Build.Repository.LocalPath)/ArmTemplates/bin/Release/'
-        
-        
-        
+            containerRegistry: '$(acrServiceConnection)'
+            repository: '$(imageRepository)'
+            buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' 
+            Dockerfile: 'DockerfileAzDevOps'
+            tags: |
+              'webapp1-$(buildTag)'          
         
         # -------------------------------------------------------
         # USEFUL
