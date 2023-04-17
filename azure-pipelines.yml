@@ -160,17 +160,17 @@ stages:
         # copies the binaries produced buy yhis build into a new image that supports the 
         # .net Core runtime.This is alos the image that is later tagged and eventually 
         # pushed to our ACR to be consumed.
-        - task: Docker@2
-          displayName: Build the Docker image for WebApp2 from the source code and push the tag to ACR  
-          inputs:            
-            command: 'buildAndPush'
-            # containerRegistry must be set to the name of the Service Connection to the Docker 
-            # available to this pipeline
-            containerRegistry: 'containerRegistryServiceConnection'
-            repository: '$(imageRepository)'            
-            Dockerfile: 'WebApp2/Dockerfile'
-            tags: | 
-              wa2-$(buildTag)
+        #- task: Docker@2
+        #  displayName: Build the Docker image for WebApp2 from the source code and push the tag to ACR  
+        #  inputs:            
+        #    command: 'buildAndPush'
+        #    # containerRegistry must be set to the name of the Service Connection to the Docker 
+        #    # available to this pipeline
+        #    containerRegistry: 'containerRegistryServiceConnection'
+        #    repository: '$(imageRepository)'            
+        #    Dockerfile: 'WebApp2/Dockerfile'
+        #    tags: | 
+        #      wa2-$(buildTag)
 
         # -------------------------------------------------------------------------------------------------------
 
