@@ -5,11 +5,9 @@ VisualStudioVersion = 17.5.33516.290
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp1", "WebApp1\WebApp1.csproj", "{DC7C9427-C755-42EC-89C1-CDE5EACE29C5}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{AEA8A9F7-A6C3-4C60-B365-CFD3606F4DB7}"
-EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "WebApp2", "WebApp2\WebApp2.csproj", "{46C433D0-6633-4C69-944E-C4F2054FAF6C}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{1B41DC01-E3D1-4C22-BB4B-F77F0B8BF114}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SolutionItems", "SolutionItems", "{1B41DC01-E3D1-4C22-BB4B-F77F0B8BF114}"
 	ProjectSection(SolutionItems) = preProject
 		.dockerignore = .dockerignore
 		azure-pipelines.yml = azure-pipelines.yml
