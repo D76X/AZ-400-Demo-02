@@ -1,4 +1,8 @@
 #See https://aka.ms/customizecontainer to learn how to customize your debug container and how Visual Studio uses this Dockerfile to build your images for faster debugging.
+#This Dockerfile is extremely simple because it is used to build
+#the image starting from the published binaries of the application.
+#This means that the Dockerfile is not a multi-stage Dockerfile and
+#only the name of the ENTRYPOINT assembly is required among other few details
 
 FROM mcr.microsoft.com/dotnet/aspnet:6.0
 WORKDIR /app
@@ -6,27 +10,3 @@ COPY  . .
 EXPOSE 80
 EXPOSE 443
 ENTRYPOINT ["dotnet", "WebApp1.dll"]
-
-# ----------------------------
-# FROM mcr.microsoft.com/dotnet/aspnet:6.0 AS base
-# WORKDIR /app
-# EXPOSE 80
-# EXPOSE 443
-
-# FROM mcr.microsoft.com/dotnet/sdk:6.0 AS build
-# WORKDIR /src
-# COPY ["AZ-400-Demo-02/WebApp1/WebApp1.csproj", "AZ-400-Demo-02/WebApp1/"]
-# COPY ["WebApp1/WebApp1.csproj", "WebApp1/"]
-# RUN dotnet restore "AZ-400-Demo-02/WebApp1/WebApp1.csproj"
-# RUN dotnet restore "AZ-400-Demo-02/WebApp1/WebApp1.csproj"
-# COPY . .
-# WORKDIR "/src/WebApp1"
-# RUN dotnet build "WebApp1.csproj" -c Release -o /app/build
-
-# FROM build AS publish
-# RUN dotnet publish "WebApp1.csproj" -c Release -o /app/publish /p:UseAppHost=false
-
-# FROM base AS final
-# WORKDIR /app
-# COPY --from=publish /app/publish .
-# ENTRYPOINT ["dotnet", "WebApp1.dll"]
