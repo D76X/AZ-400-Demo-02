@@ -85,18 +85,9 @@ stages:
             zipAfterPublish: false  
             # Add project's folder name to publish path boolean. Optional. Use when command = publish. Default value: true.
             modifyOutputPath: true 
-
-        # -------------------------------------------------------
-        # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
-        # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
-        # https://stackoverflow.com/questions/71728509/azure-devops-powershell-not-showing-file-names-for-get-childitem
-        # https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
-        # $(Agent.BuildDirectory) = /home/vsts/work/1
         
-        # -------------------------------------------------------
-        # VERY USEFUL
-        # notice that \*.* is replaced by \* because the Dockerfile does not have 
-        # extension and does not show up with the former wildcard
+        # -------------------------------------------------------------------------------------------------------
+        # Diagnostics on the Azure DevOps Pipeline Filesystem
 
         # /home/vsts/work/1/s
         - powershell: |
@@ -120,11 +111,18 @@ stages:
           displayName: 'pwsh Get-ChildItem of Build.ArtifactStagingDirectory = $(Build.ArtifactStagingDirectory)'
           continueOnError: true
 
-        # -------------------------------------------------------
-        
+        # -------------------------------------------------------------------------------------------------------  
+                
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
         # Docker@2 task from the pipeline editor
+        # https://www.udemy.com/course/azure100/learn/lecture/33386646#overview
+        # Example-1: Build a Docker Image from binaries.
+        # This task takes the binaries published to the Pipeline's Staging subfolder WebApp1
+        # and uses its DockerfileAzDevOps to build an image with the app from its binaries.
+        # The DockerfileAzDevOps is extremely simplified in this case because the image is  
+        # not going to be build from its source code by Docker in a multi-stage Dockerfile.
         - task: Docker@2
+          displayName: Build the Docker image for WebApp1 from the published binaries and push the tag to ACR  
           inputs:            
             command: 'buildAndPush'
             # containerRegistry must be set to the name of the Service Connection to the Docker 
@@ -138,148 +136,36 @@ stages:
             # for image tags the _ is the only separator allowed
             tags: | 
               wa1-$(buildTag)          
+
+        # -------------------------------------------------------------------------------------------------------
         
-        # -------------------------------------------------------
-        # USEFUL
-
-        #- powershell: |
-        #   Write-Host "Content of Build.Repository.LocalPath = $(Build.Repository.LocalPath)"
-        #   Get-ChildItem -Path $(Build.Repository.LocalPath)\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Build.Repository.LocalPath = $(Build.Repository.LocalPath)'
-        #  continueOnError: true
-
-        #- powershell: |
-        #   Write-Host "Content of Agent.WorkFolder = $(Agent.WorkFolder)"
-        #   Get-ChildItem -Path $(Agent.WorkFolder)\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Agent.WorkFolder = $(Agent.WorkFolder)'
-        #  continueOnError: true
-
-        #- powershell: |
-        #   Write-Host "Content of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1"
-        #   Get-ChildItem -Path $(Agent.BuildDirectory)/s/WebApp1\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1'
-        #  continueOnError: true
-
-        #- powershell: |
-        #   Write-Host "Content of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1"
-        #   Get-ChildItem -Path $(Agent.BuildDirectory)/s/WebApp1\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory/s/WebApp1 = $(Agent.BuildDirectory)/s/WebApp1'
-        #  continueOnError: true
-
-        #- powershell: |
-        #   Write-Host "Content of Agent.BuildDirectory = $(Agent.BuildDirectory)"
-        #   Get-ChildItem -Path $(Agent.BuildDirectory)\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Agent.BuildDirectory = $(Agent.BuildDirectory)'
-        #  continueOnError: true
-
-        #- powershell: |
-        #   Write-Host "Content of Build.SourcesDirectory = $(Build.SourcesDirectory)"
-        #   Get-ChildItem -Path $(Build.SourcesDirectory)\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Build.SourcesDirectory = $(Build.SourcesDirectory)'
-        #  continueOnError: true
-
-        #- powershell: |
-        #   Write-Host "Content of Build.SourcesDirectory = $(Build.ArtifactStagingDirectory)"
-        #   Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force | Out-String -Width 160
-        #  errorActionPreference: continue
-        #  displayName: 'pwsh Get-ChildItem of Build.SourcesDirectory = $(Build.ArtifactStagingDirectory)'
-        #  continueOnError: true
-
-        # ------------------------------------------------------- 
-        ## https://cosmin-vladutu.medium.com/azuredevops-list-files-and-folders-676386d8a2bd 
-        #- powershell: |
-        #   Write-Host "Show all folder content ArtifactStagingDirectory"
-        #   Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\*.* -Recurse -Force
-        #  errorActionPreference: continue
-        #  displayName: 'PowerShell Script List folder structure $(Build.ArtifactStagingDirectory)'
-        #  continueOnError: true
-
-        ## https://praveenkumarsreeram.com/2022/10/24/azure-devops-tips-and-tricks-15-working-with-the-magic-folders-a-b-and-s-in-the-azure-devops-agents/ 
-        #- task: PowerShell@2
-        #  displayName: List all Folders in $(System.DefaultWorkingDirectory)
-        #  inputs:
-        #    targetType: 'inline'
-        #    pwsh: true
-        #    script: |
-        #      Get-ChildItem -path $(System.DefaultWorkingDirectory) -recurse
-
-        ## https://techcommunity.microsoft.com/t5/azure-devops/azure-devops-how-to-monitor-the-files-amp-folders-placed-into/m-p/2481508
-        #- powershell: |
-        #   Write-Host "Show all folder content"
-        #   Get-ChildItem -Path $(Agent.WorkFolder)\*.* -Recurse -Force
-        #  errorActionPreference: continue
-        #  displayName: 'PowerShell Script List folder structure $(Agent.WorkFolder)'
-        #  continueOnError: true
-
-        ## https://stackoverflow.com/questions/63117797/azure-pipelines-is-there-a-way-to-view-the-folder-structure
-        ## https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/cmd-line-v2?view=azure-pipelines&tabs=yaml&viewFallbackFrom=azure-devops  
-        #- task: CmdLine@2
-        #  displayName: show folder structure on agent
-        #  inputs:
-        #    script: echo "Structure of work folder of this pipeline:"
-        #      tree $(Agent.WorkFolder)\1 /f
-        #      echo "Build.ArtifactStagingDirectory:" 
-        #      echo "$(Build.ArtifactStagingDirectory)"
-        #      echo "Build.BinariesDirectory:" 
-        #      echo "$(Build.BinariesDirectory)"
-        #      echo "Build.SourcesDirectory:"
-        #      echo "$(Build.SourcesDirectory)"
-
-        # Docker@2 task from the pipeline editor
-        #- task: Docker@2
-        #  inputs:            
-        #    repository: 'webapps'
-            #command: 'buildAndPush'
-            #buildContext: '$(Build.ArtifactStagingDirectory)/WebApp1' #Default value: ** > Pass ** to indicate the directory that contains the Docker file.
-            #string. Required when command = build || command = buildAndPush. Default value: **/Dockerfile.
-            #Dockerfile: 'WebApp1/Dockerfile'
-            #Dockerfile: '**/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.Repository.LocalPath)/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.SourcesDirectory)/WebApp1/Dockerfile'
-            #Dockerfile: '$(Build.ArtifactStagingDirectory)/WebApp1/Dockerfile'
-            #containerRegistry: 'containerRegistryServiceConnection'
-            #Dockerfile: '**/Dockerfile'  
-            #sourceFolder: '$(Build.Repository.LocalPath)/ArmTemplates/bin/Release/'
-
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/docker-v2?view=azure-pipelines&tabs=yaml
-        #- task: Docker@2
-        #  displayName: Login to ACR
-        #  inputs:
-        #    command: login
-        #    containerRegistry: dockerRegistryServiceConnection1
-        #- task: Docker@2
-        #  displayName: Login to Docker Hub
-        #  inputs:
-        #    command: login
-        #    containerRegistry: dockerRegistryServiceConnection2
-        #- task: Docker@2
-        #  displayName: Build and Push
-        #  inputs:
-        #    command: buildAndPush
-        #    repository: contosoRepository # username/contosoRepository for DockerHub
-        #    tags: |
-        #      tag1
-        #      tag2  
-        # ----------------------------------------------------------------------------        
-        #- task: Docker@2
-        #  displayName: Build and Push an image to Azure Container Registry
-        #  inputs:
-        #    command: buildAndPush
-        #    repository: $(imageRepository)
-        #    dockerFile: $(dockerfilePath)            
-        #    #containerRegistry: $(containerRegistry)
-        #    containerRegistry: $(containerRegistryServiceConnection)
-        #    tags: |
-        #      $(tag)
-        # ----------------------------------------------------------------------------
-            
+        # Docker@2 task from the pipeline editor
+        # Example-2: Build a Docker Image from souce code with a multistage Dockerbuild.
+        # https://www.udemy.com/course/azure100/learn/lecture/33386896#overview
+        # In this step we are going to use the same Dockerfile that Visual Studio uses
+        # to build the image locally and spin up the container for debugging.
+        # However, this is done in the Agent of the Azure DevOps Pipeline that executes
+        # this step of the pipeline. Notice that the step itself is executed on the Agent
+        # therefore the underlying OS must have Docker installed on it.The source code
+        # is first copied to an intermediate container materialized from an an image that 
+        # can build .Net Core projects then the next step of the Dockerfile multistage 
+        # copies the binaries produced buy yhis build into a new image that supports the 
+        # .net Core runtime.This is alos the image that is later tagged and eventually 
+        # pushed to our ACR to be consumed.
+        - task: Docker@2
+          displayName: Build the Docker image for WebApp2 from the source code and push the tag to ACR  
+          inputs:            
+            command: 'buildAndPush'
+            # containerRegistry must be set to the name of the Service Connection to the Docker 
+            # available to this pipeline
+            containerRegistry: 'containerRegistryServiceConnection'
+            repository: '$(imageRepository)'            
+            Dockerfile: 'WebApp2/DockerfileAzDevOps'
+            tags: | 
+              wa2-$(buildTag)
+
+        # -------------------------------------------------------------------------------------------------------
 
         #- script: echo Hello, world!
         #  displayName: 'Run a one-line script'
