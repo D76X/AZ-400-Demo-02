@@ -105,6 +105,13 @@ stages:
           continueOnError: true
 
         - powershell: |
+           Write-Host "Content of Build.Repository.LocalPath/WebApp2 = $(Build.Repository.LocalPath)/WebApp2"
+           Get-ChildItem -Path $(Build.Repository.LocalPath)/WebApp2\* -Recurse -Force | Out-String -Width 160
+          errorActionPreference: continue
+          displayName: 'pwsh Get-ChildItem of Build.Repository.LocalPath/WebApp2 = $(Build.Repository.LocalPath)/WebApp2'
+          continueOnError: true
+          
+        - powershell: |
            Write-Host "Content of Build.ArtifactStagingDirectory = $(Build.ArtifactStagingDirectory)"
            Get-ChildItem -Path $(Build.ArtifactStagingDirectory)\* -Recurse -Force | Out-String -Width 160
           errorActionPreference: continue
