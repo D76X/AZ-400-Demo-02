@@ -11,8 +11,9 @@ WORKDIR /src
 COPY ["WebApp2.csproj", "WebApp2/"]
 RUN dotnet restore "WebApp2/WebApp2.csproj"
 #RUN dotnet restore "WebApp2.csproj"
-COPY . .
 WORKDIR "/src/WebApp2"
+COPY . .
+#WORKDIR "/src/WebApp2"
 RUN dotnet build "WebApp2.csproj" -c Release -o /app/build
 
 FROM build AS publish
