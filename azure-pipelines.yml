@@ -168,7 +168,7 @@ stages:
             # available to this pipeline
             containerRegistry: 'containerRegistryServiceConnection'
             repository: '$(imageRepository)'            
-            Dockerfile: 'Dockerfile'
+            Dockerfile: 'WebApp2/Dockerfile'
             tags: | 
               wa2-$(buildTag)
 
