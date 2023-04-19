@@ -213,11 +213,11 @@ stages:
         strategy: # Default deployment strategy, more coming...     
           runOnce:
             deploy:
-             steps:      
-            # Release/Deploy to Azure Container Instances 
-            # https://www.udemy.com/course/azure100/learn/lecture/33386754#overview
-            # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-cli-v2?view=azure-pipelines
-            - task: AzureCLI@2
+              steps:      
+              # Release/Deploy to Azure Container Instances 
+              # https://www.udemy.com/course/azure100/learn/lecture/33386754#overview
+              # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-cli-v2?view=azure-pipelines
+              - task: AzureCLI@2
                 displayName: deploy WebApp1 to ACR  
                 inputs:
                 azureSubscription: 'Visual Studio Professional with MSDN (df17c9fe-de76-4143-bbae-77b75fa0705b)' 
