@@ -201,36 +201,39 @@ stages:
   - stage: CD
     displayName: CD Stage
     jobs:
-      # Deplyment Jobs
-      # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops
-      # Azure DevOps Environments EXPLAINED
-      # https://www.youtube.com/watch?v=gN4j65w7wIM&t=203s
-      environment: Dev
-      - job: Deploy 
+        # Deplyment Jobs
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops
+        # Azure DevOps Environments EXPLAINED
+        # https://www.youtube.com/watch?v=gN4j65w7wIM&t=203s
+      - deployment: DeployWebApps
         displayName: Deploy_containers_from_the_ACR_to_the_corresponding_container_services_on_Azure           
-        pool:
+          pool:
           vmImage: ubuntu-latest
-
-        # Release/Deploy to Azure Container Instances 
-        # https://www.udemy.com/course/azure100/learn/lecture/33386754#overview
-        # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-cli-v2?view=azure-pipelines
-        - task: AzureCLI@2
-          displayName: deploy WebApp1 to ACR  
-          inputs:
-            azureSubscription: 'Visual Studio Professional with MSDN (df17c9fe-de76-4143-bbae-77b75fa0705b)' 
-            #scriptType: # 'ps' | 'pscore' | 'batch' | 'bash'. Required. Script Type. 
-            scriptType: 'batch'
-            #scriptLocation: 'scriptPath' # 'inlineScript' | 'scriptPath'. Required. Script Location. Default: scriptPath.
-            #------------------------------------------------------------
-            scriptLocation: 'inlineScript'            
-            inlineScript: |
-              az --version
-              az account show            
-            #------------------------------------------------------------
-            #scriptLocation: 'scriptPath'
-            #arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY)'    
-            #scriptPath: './scripts/publish.ps1'
-            #------------------------------------------------------------
+        environment: Dev
+        strategy: # Default deployment strategy, more coming...     
+          runOnce:
+            deploy:
+             steps:      
+            # Release/Deploy to Azure Container Instances 
+            # https://www.udemy.com/course/azure100/learn/lecture/33386754#overview
+            # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-cli-v2?view=azure-pipelines
+            - task: AzureCLI@2
+                displayName: deploy WebApp1 to ACR  
+                inputs:
+                azureSubscription: 'Visual Studio Professional with MSDN (df17c9fe-de76-4143-bbae-77b75fa0705b)' 
+                #scriptType: # 'ps' | 'pscore' | 'batch' | 'bash'. Required. Script Type. 
+                scriptType: 'batch'
+                #scriptLocation: 'scriptPath' # 'inlineScript' | 'scriptPath'. Required. Script Location. Default: scriptPath.
+                #------------------------------------------------------------
+                scriptLocation: 'inlineScript'            
+                inlineScript: |
+                    az --version
+                    az account show            
+                #------------------------------------------------------------
+                #scriptLocation: 'scriptPath'
+                #arguments: '$(AZURE_STORAGE_ACCOUNT) $(AZURE_STORAGE_KEY)'    
+                #scriptPath: './scripts/publish.ps1'
+                #------------------------------------------------------------
 
 # az container create -g devops-grp --name appinstance20030 --cpu 1 --memory 1  --ports 80 --ip-address Public --image registry57767.azurecr.io/sqlappdocker:latest --registry-username registry57767 --registry-password XeVWwKmmKD2IAS34A8B8i7E+MWJlneju
 # az container create 
