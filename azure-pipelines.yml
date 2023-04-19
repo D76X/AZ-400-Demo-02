@@ -208,7 +208,8 @@ stages:
       - deployment: DeployWebApps
         displayName: Deploy_containers_from_the_ACR_to_the_corresponding_container_services_on_Azure           
         pool:
-          vmImage: ubuntu-latest
+          vmImage: windows-2022
+          #vmImage: ubuntu-latest
         environment: Dev
         strategy: # Default deployment strategy, more coming...     
           runOnce:
