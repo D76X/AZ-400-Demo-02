@@ -205,9 +205,9 @@ stages:
       # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops
       # Azure DevOps Environments EXPLAINED
       # https://www.youtube.com/watch?v=gN4j65w7wIM&t=203s
+      environment: Dev
       - job: Deploy 
-        displayName: Deploy_containers_from_the_ACR_to_the_corresponding_container_services_on_Azure   
-        environment: Dev
+        displayName: Deploy_containers_from_the_ACR_to_the_corresponding_container_services_on_Azure           
         pool:
           vmImage: ubuntu-latest
 
