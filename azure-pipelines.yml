@@ -208,8 +208,19 @@ stages:
       - deployment: DeployWebApps
         displayName: Deploy_containers_from_the_ACR_to_the_corresponding_container_services_on_Azure           
         pool:
-          vmImage: windows-2022
-          #vmImage: ubuntu-latest
+          # --------------------------------------------------------------------------------------------------
+          # Microsoft-hosted agents
+          # https://learn.microsoft.com/en-us/azure/devops/pipelines/agents/hosted?view=azure-devops&tabs=yaml
+          # Azure DevOps CLI in Azure Pipeline YAML
+          # https://learn.microsoft.com/en-us/azure/devops/cli/azure-devops-cli-in-yaml?view=azure-devops
+          # The Microsoft-hosted Windows and Linux agents are preconfigured with Azure CLI and the Azure DevOps CLI extension.
+          #vmImage: windows-2022
+          vmImage: ubuntu-latest
+
+          # However be aware that on the type of the script is different as follows
+          #scriptType: 'batch' on Windows          
+          #scriptType: 'bash'  on Linux                
+          # --------------------------------------------------------------------------------------------------
         environment: Dev
         strategy: # Default deployment strategy, more coming...     
           runOnce:
@@ -223,8 +234,12 @@ stages:
                 inputs:
                   azureSubscription: 'Visual Studio Professional with MSDN (df17c9fe-de76-4143-bbae-77b75fa0705b)' 
                   #scriptType: # 'ps' | 'pscore' | 'batch' | 'bash'. Required. Script Type. 
-                  scriptType: 'batch'
                   #scriptLocation: 'scriptPath' # 'inlineScript' | 'scriptPath'. Required. Script Location. Default: scriptPath.
+                  #------------------------------------------------------------
+                  #On a Windows Agent
+                  #scriptType: 'batch'
+                  #------------------------------------------------------------
+                  scriptType: 'bash'
                   #------------------------------------------------------------
                   scriptLocation: 'inlineScript'            
                   inlineScript: |
