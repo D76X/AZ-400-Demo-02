@@ -226,22 +226,23 @@ stages:
           runOnce:
             deploy:
               steps:      
-              # Release/Deploy to Azure Container Instances 
-              # https://www.udemy.com/course/azure100/learn/lecture/33386754#overview
-              # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-cli-v2?view=azure-pipelines
               - task: AzureCLI@2
-                displayName: deploy WebApp1 to ACR  
+                displayName: test that Azure CLI is available on the Agent either Windows or Linux
                 inputs:
                   azureSubscription: 'Visual Studio Professional with MSDN (df17c9fe-de76-4143-bbae-77b75fa0705b)' 
                   #scriptType: # 'ps' | 'pscore' | 'batch' | 'bash'. Required. Script Type. 
                   #scriptLocation: 'scriptPath' # 'inlineScript' | 'scriptPath'. Required. Script Location. Default: scriptPath.
                   #------------------------------------------------------------
-                  #On a Windows Agent
+                  #On a Windows Agent use BATCH !
                   #scriptType: 'batch'
                   #------------------------------------------------------------
+                  #On a Linux Agent use BASH !
                   scriptType: 'bash'
                   #------------------------------------------------------------
-                  scriptLocation: 'inlineScript'            
+                  # the following simple inline script produces the details of the Azure CLI installed on the agentLocation: 
+                  # and alos the details of the account that is logged in by means of the Service Connection provided as value
+                  # of the parameter azureSubscription aboove.
+                  scriptLocation: 'inlineScript'                        
                   inlineScript: |
                     az --version
                     az account show            
@@ -251,6 +252,24 @@ stages:
                   #scriptPath: './scripts/publish.ps1'
                   #------------------------------------------------------------
 
+              # Release/Deploy to Azure Container Instances 
+              # https://www.udemy.com/course/azure100/learn/lecture/33386754#overview
+              # https://learn.microsoft.com/en-us/azure/devops/pipelines/tasks/reference/azure-cli-v2?view=azure-pipelines               
+              - task: AzureCLI@2
+                displayName: deploy WebApp1 to ACR by means of the Azure CLI  
+                inputs:
+                  azureSubscription: 'Visual Studio Professional with MSDN (df17c9fe-de76-4143-bbae-77b75fa0705b)' 
+                  #On a Linux Agent use BASH !
+                  scriptType: 'bash'                  
+                  scriptLocation: inlineScript 
+                  #-----------------------------------------------
+                  #Batch script: %ACRAZ400DEMOXPSW%
+                  #PowerShell script: ${env:ACRAZ400DEMOXPSW}
+                  #Bash script: $(ACRAZ400DEMOXPSW)
+                  #-----------------------------------------------
+                  inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                                
+                  
 # az container create -g devops-grp --name appinstance20030 --cpu 1 --memory 1  --ports 80 --ip-address Public --image registry57767.azurecr.io/sqlappdocker:latest --registry-username registry57767 --registry-password XeVWwKmmKD2IAS34A8B8i7E+MWJlneju
 # az container create 
 # -g devops-grp --name appinstance20030 
