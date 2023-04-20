@@ -268,18 +268,20 @@ stages:
                   scriptType: 'bash'                  
                   scriptLocation: inlineScript 
                   #-----------------------------------------------
-                  #the password og the user to teh ACR is saved as a secret in the pipeline
+                  #the password of the user to teh ACR is saved as a secret in the pipeline
+                  #the yntax to access variables in the Pipeline varies according to the type of script and Agent
                   #Batch script: %ACRAZ400DEMOXPSW%
                   #PowerShell script: ${env:ACRAZ400DEMOXPSW}
                   #Bash script: $(ACRAZ400DEMOXPSW)
                   #-----------------------------------------------
-                  #In this one we use only $(ACRAZ400DEMOXPSW) as a pipeline secret variable
-                  #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
-                  #-----------------------------------------------
-                  #In this one we use the same password read as a secret from a Variable Group
+                  #In this one we use only $(ACRAZ400DEMOXPSW) as a pipeline secret variable OR Variable Group
                   #Variable Groups in Azure DevOps Pipelines https://www.youtube.com/watch?v=1axCfFv7jmw&t=191s
                   #Add & use variable groups https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml
-                  inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  #-----------------------------------------------                 
+                  inlineScript: az container create -g $(ACR-RG) --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGINS-SERVER)/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  
+                  # TEMPLATE
                   #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/$(imageRepository):wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
                                 
                   
