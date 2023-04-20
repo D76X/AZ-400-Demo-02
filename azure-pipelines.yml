@@ -200,6 +200,9 @@ stages:
 
   - stage: CD
     displayName: CD Stage
+    # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/variables?view=azure-devops&tabs=yaml%2Cbatch#set-a-multi-job-output-variable
+    # By default, each stage in a pipeline depends on the one just before it in the YAML file but you can override this with dependsOn: YOUR-STAGE-HERE
+    # dependsOn: CI 
     jobs:
         # Deplyment Jobs
         # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/deployment-jobs?view=azure-devops
@@ -221,6 +224,8 @@ stages:
           #scriptType: 'batch' on Windows          
           #scriptType: 'bash'  on Linux                
           # --------------------------------------------------------------------------------------------------
+        variables:
+          group: acr-az-400-demo-dev        
         environment: Dev
         strategy: # Default deployment strategy, more coming...     
           runOnce:
@@ -268,8 +273,14 @@ stages:
                   #PowerShell script: ${env:ACRAZ400DEMOXPSW}
                   #Bash script: $(ACRAZ400DEMOXPSW)
                   #-----------------------------------------------
+                  #In this one we use only $(ACRAZ400DEMOXPSW) as a pipeline secret variable
                   #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
-                  inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/$(imageRepository):wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  #-----------------------------------------------
+                  #In this one we use the same password read as a secret from a Variable Group
+                  #Variable Groups in Azure DevOps Pipelines https://www.youtube.com/watch?v=1axCfFv7jmw&t=191s
+                  #Add & use variable groups https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml
+                  inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/$(imageRepository):wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
                                 
                   
 # az container create -g devops-grp --name appinstance20030 --cpu 1 --memory 1  --ports 80 --ip-address Public --image registry57767.azurecr.io/sqlappdocker:latest --registry-username registry57767 --registry-password XeVWwKmmKD2IAS34A8B8i7E+MWJlneju
