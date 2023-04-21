@@ -257,9 +257,11 @@ stages:
               
               # On Linux
               - bash: |
+                  echo ": wa1tag=stageDependencies.CI.outputs['SetOutputVars.wa1tag']"
+                  echo ": wa2tag=stageDependencies.CI.outputs['SetOutputVars.wa2tag']"
                   echo ": wa1tag=$(wa1tag)"
                   echo ": wa2tag=$(wa2tag)"
-                  echo ": wa2tag=dependencies.CI.outputs['Build.SetOutputVars.wa1tag']"
+                  echo ": wa1tag=dependencies.CI.outputs['Build.SetOutputVars.wa1tag']"
                   echo ": wa2tag=dependencies.CI.outputs['Build.SetOutputVars.wa2tag']"
                 displayName: 'Print the output variables from the CI Stage'
                   
