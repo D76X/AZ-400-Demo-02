@@ -208,6 +208,7 @@ stages:
         - powershell: |
            Write-Host "##vso[task.setvariable variable=wa1tag;isoutput=true]wa1-$(buildTag)"
            Write-Host "##vso[task.setvariable variable=wa2tag;isoutput=true]wa2-$(buildTag)"
+          name: SetOutputVars
         # -------------------------------------------------------------------------------------------------------
 
         #- script: echo Hello, world!
@@ -258,6 +259,8 @@ stages:
               - bash: |
                   echo ": wa1tag=$(wa1tag)"
                   echo ": wa2tag=$(wa2tag)"
+                  echo ": wa2tag=dependencies.CI.outputs['Build.SetOutputVars.wa1tag']"
+                  echo ": wa2tag=dependencies.CI.outputs['Build.SetOutputVars.wa2tag']"
                 displayName: 'Print the output variables from the CI Stage'
                   
               - task: AzureCLI@2
@@ -324,7 +327,8 @@ stages:
                   # In the following we aim to replace the token wa1-406 by using the OUTPUT of the previous stage CI.
                   # --name aiwa1406
                   # --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406
-                  inlineScript: az container create -g $(ACR-RG) --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406 --registry-username $(ACR-USER) --registry-password $(ACRAZ400DEMOXPSW)
+                  inlineScript: az --version
+                  #inlineScript: az container create -g $(ACR-RG) --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406 --registry-username $(ACR-USER) --registry-password $(ACRAZ400DEMOXPSW)
                                 
                   
 # az container create -g devops-grp --name appinstance20030 --cpu 1 --memory 1  --ports 80 --ip-address Public --image registry57767.azurecr.io/sqlappdocker:latest --registry-username registry57767 --registry-password XeVWwKmmKD2IAS34A8B8i7E+MWJlneju
