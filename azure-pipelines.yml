@@ -189,6 +189,26 @@ stages:
         #      wa2-$(buildTag)
 
         # -------------------------------------------------------------------------------------------------------
+        # Create output variables that may be consumed by the Deployment stage
+        # https://www.nigelfrank.com/insights/azure-devops-output-variables
+        # Logging commands: are how tasks and scripts communicate with the agent. 
+        # They cover actions like creating new variables, marking a step as failed, and uploading artifacts. 
+        # Logging commands are useful when you're troubleshooting a pipeline.
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands?view=azure-devops&tabs=bash
+
+        # Bash or Powershell may be used  as foolows
+
+        # https://learn.microsoft.com/en-us/azure/devops/pipelines/scripts/logging-commands?view=azure-devops&tabs=powershell#setvariable-initialize-or-modify-the-value-of-a-variable
+        #- bash: |
+        #    echo "##vso[task.setvariable variable=sauce;]crushed tomatoes"
+        #    echo "##vso[task.setvariable variable=secretSauce;issecret=true]crushed tomatoes with garlic"
+        #    echo "##vso[task.setvariable variable=outputSauce;isoutput=true]canned goods"
+        #  name: SetVars
+
+        - powershell: |
+           Write-Host "##vso[task.setvariable variable=wa1tag;isoutput=true]wa1-$(buildTag)"
+           Write-Host "##vso[task.setvariable variable=wa2tag;isoutput=true]wa2-$(buildTag)"
+        # -------------------------------------------------------------------------------------------------------
 
         #- script: echo Hello, world!
         #  displayName: 'Run a one-line script'
@@ -197,6 +217,8 @@ stages:
         #    echo Add other tasks to build, test, and deploy your project.
         #    echo See https://aka.ms/yaml
         #  displayName: 'Run a multi-line script'
+
+        # -------------------------------------------------------------------------------------------------------
 
   - stage: CD
     displayName: CD Stage
@@ -231,6 +253,13 @@ stages:
           runOnce:
             deploy:
               steps:      
+              
+              # On Linux
+              - bash: |
+                  echo ": wa1tag=$(wa1tag)"
+                  echo ": wa2tag=$(wa2tag)"
+                displayName: 'Print the output variables from the CI Stage'
+                  
               - task: AzureCLI@2
                 displayName: test that Azure CLI is available on the Agent either Windows or Linux
                 inputs:
@@ -268,6 +297,9 @@ stages:
                   scriptType: 'bash'                  
                   scriptLocation: inlineScript 
                   #-----------------------------------------------
+                  # TEMPLATE
+                  #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/$(imageRepository):wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  #-----------------------------------------------
                   #the password of the user to teh ACR is saved as a secret in the pipeline
                   #the yntax to access variables in the Pipeline varies according to the type of script and Agent
                   #Batch script: %ACRAZ400DEMOXPSW%
@@ -279,10 +311,20 @@ stages:
                   #Add & use variable groups https://learn.microsoft.com/en-us/azure/devops/pipelines/library/variable-groups?view=azure-devops&tabs=yaml
                   #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/webapps:wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
                   #-----------------------------------------------                 
+                  # In this inline script the only token that is NOT replaced by the value of a pipeline variable 
+                  # is wa1-406 that is the name of the image on the ACR server in the repository webapps.
+                  #inlineScript: az container create -g $(ACR-RG) --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406 --registry-username $(ACR-USER) --registry-password $(ACRAZ400DEMOXPSW)
+                  #-----------------------------------------------  
+                  # https://stackoverflow.com/questions/57485621/share-variables-across-stages-in-azure-devops-pipelines
+                  # Job to job dependencies across stages
+                  # At the job level, you can also reference outputs from a job in a previous stage. This requires using the stageDependencies context.
+                  # https://learn.microsoft.com/en-us/azure/devops/pipelines/process/expressions?view=azure-devops#job-to-job-dependencies-across-stages
+                  # Jobs can access output variables from previous stages
+                  # https://learn.microsoft.com/en-us/azure/devops/release-notes/2020/sprint-168-update#azure-pipelines-1
+                  # In the following we aim to replace the token wa1-406 by using the OUTPUT of the previous stage CI.
+                  # --name aiwa1406
+                  # --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406
                   inlineScript: az container create -g $(ACR-RG) --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406 --registry-username $(ACR-USER) --registry-password $(ACRAZ400DEMOXPSW)
-                  
-                  # TEMPLATE
-                  #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/$(imageRepository):wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
                                 
                   
 # az container create -g devops-grp --name appinstance20030 --cpu 1 --memory 1  --ports 80 --ip-address Public --image registry57767.azurecr.io/sqlappdocker:latest --registry-username registry57767 --registry-password XeVWwKmmKD2IAS34A8B8i7E+MWJlneju
