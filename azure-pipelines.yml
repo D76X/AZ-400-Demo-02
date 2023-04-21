@@ -249,22 +249,19 @@ stages:
           # --------------------------------------------------------------------------------------------------
         variables:
           group: acr-az-400-demo-dev  
+          # read the output variables from the previous stage into this stage
+          # https://stackoverflow.com/questions/57485621/share-variables-across-stages-in-azure-devops-pipelines
           wa1tag: $[stageDependencies.CI.Build.outputs['SetOutputVars.wa1tag']]
           wa2tag: $[stageDependencies.CI.Build.outputs['SetOutputVars.wa2tag']]
         environment: Dev
         strategy: # Default deployment strategy, more coming...     
           runOnce:
             deploy:
-              steps:      
+              steps:                   
               
-              # On Linux
               - bash: |
-                  #echo ": wa1tag=$[ stageDependencies.CI.Build.outputs['SetOutputVars.wa1tag'] ]"
-                  #echo ": wa2tag=$[ stageDependencies.CI.Build.outputs['SetOutputVars.wa2tag'] ]"
                   echo ": wa1tag=$(wa1tag)"
-                  echo ": wa2tag=$(wa2tag)"
-                  #echo ": wa1tag=dependencies.CI.outputs['Build.SetOutputVars.wa1tag']"
-                  #echo ": wa2tag=dependencies.CI.outputs['Build.SetOutputVars.wa2tag']"
+                  echo ": wa2tag=$(wa2tag)"                  
                 displayName: 'Print the output variables from the CI Stage'
                   
               - task: AzureCLI@2
@@ -306,6 +303,8 @@ stages:
                   #-----------------------------------------------
                   # TEMPLATE
                   #inlineScript: az container create -g az-400-demo-resources --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image acraz400demox.azurecr.io/$(imageRepository):wa1-406 --registry-username acraz400demox --registry-password $(ACRAZ400DEMOXPSW)
+                  # PLACEHOLDER
+                  #inlineScript: az --version
                   #-----------------------------------------------
                   #the password of the user to teh ACR is saved as a secret in the pipeline
                   #the yntax to access variables in the Pipeline varies according to the type of script and Agent
@@ -331,8 +330,7 @@ stages:
                   # In the following we aim to replace the token wa1-406 by using the OUTPUT of the previous stage CI.
                   # --name aiwa1406
                   # --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406
-                  inlineScript: az --version
-                  #inlineScript: az container create -g $(ACR-RG) --name aiwa1406 --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):wa1-406 --registry-username $(ACR-USER) --registry-password $(ACRAZ400DEMOXPSW)
+                  inlineScript: az container create -g $(ACR-RG) --name ai$(wa1tag) --cpu 1 --memory 1  --ports 80 --ip-address Public --image $(ACR-LOGIN-SERVER)/$(ACR-REPOSITORY):$(wa1tag) --registry-username $(ACR-USER) --registry-password $(ACRAZ400DEMOXPSW)
                                 
                   
 # az container create -g devops-grp --name appinstance20030 --cpu 1 --memory 1  --ports 80 --ip-address Public --image registry57767.azurecr.io/sqlappdocker:latest --registry-username registry57767 --registry-password XeVWwKmmKD2IAS34A8B8i7E+MWJlneju
