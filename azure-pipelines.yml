@@ -248,7 +248,9 @@ stages:
           #scriptType: 'bash'  on Linux                
           # --------------------------------------------------------------------------------------------------
         variables:
-          group: acr-az-400-demo-dev        
+          group: acr-az-400-demo-dev  
+          wa1tag: $[stageDependencies.CI.Build.outputs['SetOutputVars.wa1tag']]
+          wa2tag: $[stageDependencies.CI.Build.outputs['SetOutputVars.wa2tag']]
         environment: Dev
         strategy: # Default deployment strategy, more coming...     
           runOnce:
@@ -257,10 +259,10 @@ stages:
               
               # On Linux
               - bash: |
-                  echo ": wa1tag=$[ stageDependencies.CI.Build.outputs['SetOutputVars.wa1tag'] ]"
-                  echo ": wa2tag=$[ stageDependencies.CI.Build.outputs['SetOutputVars.wa2tag'] ]"
-                  #echo ": wa1tag=$(wa1tag)"
-                  #echo ": wa2tag=$(wa2tag)"
+                  #echo ": wa1tag=$[ stageDependencies.CI.Build.outputs['SetOutputVars.wa1tag'] ]"
+                  #echo ": wa2tag=$[ stageDependencies.CI.Build.outputs['SetOutputVars.wa2tag'] ]"
+                  echo ": wa1tag=$(wa1tag)"
+                  echo ": wa2tag=$(wa2tag)"
                   #echo ": wa1tag=dependencies.CI.outputs['Build.SetOutputVars.wa1tag']"
                   #echo ": wa2tag=dependencies.CI.outputs['Build.SetOutputVars.wa2tag']"
                 displayName: 'Print the output variables from the CI Stage'
